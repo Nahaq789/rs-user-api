@@ -32,7 +32,16 @@ impl UserRepository for PgUserRepository {
         Ok(())
     }
 
-    async fn find_by_id(&self, id: u32) -> Result<Option<User>, Error> {
-        todo!()
+    async fn find_by_id(&self, id: i32) -> Result<Option<User>, Error> {
+        let user = sqlx::query_as!(
+            User,
+            "SELECT * FROM users WHERE id = $1",
+            id
+        )
+        .fetch_optional(&self.pool)
+        .await
+        .expect("User can't create");
+
+        Ok(user)
     }
 }
