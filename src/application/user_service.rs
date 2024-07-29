@@ -20,5 +20,15 @@ impl UserService {
         let user = self.repository.find_by_id(id).await?;
         Ok((user))
     }
+
+    pub async fn delete_by_id(&self, id: i32) -> Result<(), sqlx::Error> {
+        self.repository.delete(id).await?;
+        Ok(())
+    }
+
+    pub async fn update(&self, user: &User) -> Result<(), sqlx::Error> {
+        self.repository.update(&user).await?;
+        Ok(())
+    }
 }
 

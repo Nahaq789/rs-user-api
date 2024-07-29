@@ -15,10 +15,4 @@ impl User {
             id, name, email, password
         }
     }
-
-    fn new_without_id(name: String, email: String, password: String) -> User {
-        User {
-            id: 0, name, email, password
-        }
-    }
 }
