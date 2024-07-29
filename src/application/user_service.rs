@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::domain::{entity::user::{self, User}, repository::user_repository::UserRepository};
+use crate::domain::{entity::user::{User}, repository::user_repository::UserRepository};
 
 pub struct UserService {
     repository: Arc<dyn UserRepository>
@@ -18,7 +18,7 @@ impl UserService {
 
     pub async fn find_user_by_id(&self, id: i32) -> Result<Option<User>, sqlx::Error> {
         let user = self.repository.find_by_id(id).await?;
-        Ok((user))
+        Ok(user)
     }
 
     pub async fn delete_by_id(&self, id: i32) -> Result<(), sqlx::Error> {

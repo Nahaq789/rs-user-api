@@ -9,10 +9,10 @@ pub struct User {
     pub password: String
 }
 
-impl User {
-    fn new(id: i32, name: String, email: String, password: String) -> User {
-        User {
-            id, name, email, password
-        }
-    }
-}
+// impl User {
+//     fn new(id: i32, name: String, email: String, password: String) -> User {
+//         User {
+//             id, name, email, password
+//         }
+//     }
+// }

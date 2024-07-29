@@ -11,17 +11,8 @@ use serde::Deserialize;
 
 use crate::{
     application::user_service::UserService,
-    domain::entity::user::{self, User},
+    domain::entity::user::{User},
 };
-pub struct UserController {
-    user_service: Arc<UserService>,
-}
-
-impl UserController {
-    pub fn new(user_service: Arc<UserService>) -> UserController {
-        UserController { user_service }
-    }
-}
 
 pub async fn create(
     Extension(module): Extension<Arc<UserService>>,
