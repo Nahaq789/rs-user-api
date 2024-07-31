@@ -1,18 +1,15 @@
 use std::sync::Arc;
 
+use axum::extract::Query;
 use axum::{
     extract::Path,
     http::StatusCode,
     response::{IntoResponse, Response},
     Extension, Json,
 };
-use axum::extract::Query;
 use serde::Deserialize;
 
-use crate::{
-    application::user_service::UserService,
-    domain::entity::user::{User},
-};
+use crate::{application::user_service::UserService, domain::entity::user::User};
 
 pub async fn create(
     Extension(module): Extension<Arc<UserService>>,
@@ -50,30 +47,30 @@ pub async fn delete_by_id(
     Query(param): Query<UserIdParam>,
 ) -> Response {
     if param.id <= 0 {
-        return (StatusCode::BAD_REQUEST, "Invalid user id").into_response()
+        return (StatusCode::BAD_REQUEST, "Invalid user id").into_response();
     };
 
     match module.delete_by_id(param.id).await {
         Ok(_) => StatusCode::OK.into_response(),
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response()
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
 }
 
 pub async fn update(
     Extension(module): Extension<Arc<UserService>>,
     Path(params): Path<UserIdParam>,
-    Json(payload): Json<UpdateUserRequest>
+    Json(payload): Json<UpdateUserRequest>,
 ) -> Response {
     let user = User {
         id: params.id,
         name: payload.name,
         email: payload.email,
-        password: payload.password
+        password: payload.password,
     };
 
     match module.update(&user).await {
         Ok(_) => StatusCode::OK.into_response(),
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response()
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
 }
 
@@ -86,12 +83,12 @@ pub struct CreateUserRequest {
 
 #[derive(Deserialize)]
 pub struct UserIdParam {
-    id: i32
+    id: i32,
 }
 
 #[derive(Deserialize)]
 pub struct UpdateUserRequest {
     name: String,
     email: String,
-    password: String
+    password: String,
 }
