@@ -18,10 +18,11 @@ impl PgUserRepository {
 impl UserRepository for PgUserRepository {
     async fn save(&self, user: &User) -> Result<(), Error> {
         sqlx::query!(
-            "INSERT INTO users(name, email, password) VALUES($1, $2, $3)",
+            "INSERT INTO users(name, email, password, salt) VALUES($1, $2, $3, $4)",
             user.name,
             user.email,
-            user.password
+            user.password,
+            user.salt
         )
         .execute(&self.pool)
         .await

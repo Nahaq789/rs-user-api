@@ -1,5 +1,4 @@
-pub mod domain;
-pub mod config;
-pub mod infrastructure;
-pub mod application;
 pub mod adapter;
+pub mod application;
+pub mod domain;
+pub mod infrastructure;

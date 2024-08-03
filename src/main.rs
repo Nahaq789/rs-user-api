@@ -1,16 +1,17 @@
 use std::sync::Arc;
 
-use app::adapter::user_controller::{create, delete_by_id, get_user_by_id, update};
-use app::application::user_service::UserService;
-use app::config::establish_pool;
+use app::adapter::controller::user_controller::{create, delete_by_id, get_user_by_id, update};
+use app::adapter::database::config::establish_pool;
+use app::application::crypto_service::CryptoServiceImpl;
+use app::application::user_service::{UserService, UserServiceImpl};
 use app::infrastructure::user_repository::PgUserRepository;
 
+use axum::routing::{delete, patch};
 use axum::Extension;
 use axum::{
     routing::{get, post},
     Router,
 };
-use axum::routing::{delete, patch};
 
 #[tokio::main]
 async fn main() {
@@ -20,7 +21,9 @@ async fn main() {
         .await
         .expect("Failed to create database pool");
     let user_repository = Arc::new(PgUserRepository::new(pool));
-    let user_service = Arc::new(UserService::new(user_repository));
+    let crypto_service = Arc::new(CryptoServiceImpl::new());
+    let user_service: Arc<dyn UserService> =
+        Arc::new(UserServiceImpl::new(user_repository, crypto_service));
 
     let app = Router::new()
         .route("/user", post(create))

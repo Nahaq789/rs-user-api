@@ -1,1 +1,2 @@
-pub mod user_controller;
+pub mod controller;
+pub mod database;
