@@ -9,10 +9,11 @@ use axum::{
 };
 use serde::Deserialize;
 
-use crate::{application::user_service::UserService, domain::entity::user::User};
+use crate::application::user_service::UserService;
+use crate::{application::user_service::UserServiceImpl, domain::entity::user::User};
 
 pub async fn create(
-    Extension(module): Extension<Arc<UserService>>,
+    Extension(module): Extension<Arc<dyn UserService>>,
     Json(payload): Json<CreateUserRequest>,
 ) -> Response {
     let user = User {
@@ -20,15 +21,16 @@ pub async fn create(
         name: payload.name,
         email: payload.email,
         password: payload.password,
+        salt: String::from(""),
     };
-    match module.create_user(&user).await {
+    match module.create_user(user).await {
         Ok(_) => StatusCode::OK.into_response(),
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
 }
 
 pub async fn get_user_by_id(
-    Extension(module): Extension<Arc<UserService>>,
+    Extension(module): Extension<Arc<UserServiceImpl>>,
     Query(param): Query<UserIdParam>,
 ) -> Response {
     if param.id <= 0 {
@@ -43,7 +45,7 @@ pub async fn get_user_by_id(
 }
 
 pub async fn delete_by_id(
-    Extension(module): Extension<Arc<UserService>>,
+    Extension(module): Extension<Arc<UserServiceImpl>>,
     Query(param): Query<UserIdParam>,
 ) -> Response {
     if param.id <= 0 {
@@ -57,7 +59,7 @@ pub async fn delete_by_id(
 }
 
 pub async fn update(
-    Extension(module): Extension<Arc<UserService>>,
+    Extension(module): Extension<Arc<UserServiceImpl>>,
     Path(params): Path<UserIdParam>,
     Json(payload): Json<UpdateUserRequest>,
 ) -> Response {
@@ -66,6 +68,7 @@ pub async fn update(
         name: payload.name,
         email: payload.email,
         password: payload.password,
+        salt: String::from(""),
     };
 
     match module.update(&user).await {
